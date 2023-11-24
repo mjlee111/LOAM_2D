@@ -3,7 +3,7 @@
 namespace loam
 {
 loam_dynamixel::loam_dynamixel(int argc, char** argv)
-  : init_argc(argc), init_argv(argv), device_name("/dev/ttyUSB1"), default_rpm(20)
+  : init_argc(argc), init_argv(argv), device_name("/dev/ttyUSB0"), default_rpm(20)
 {
   bool isRos = init();
   if (isRos)
@@ -35,10 +35,19 @@ bool loam_dynamixel::init()
   }
   ROS_INFO("master available.");
   ros::start();
-  isCom = initDynamixelSdk();
   ros::NodeHandle nh;
-
+  std::string device_param;
+  if (!nh.getParam("/device/dynamixel", device_param))
+  {
+    ROS_ERROR("Failed to retrieve parameter.");
+    return false;
+  }
+  ROS_INFO("Launching node with %s", device_param.c_str());
+  device_name = device_param;
   rpm_sub = nh.subscribe<std_msgs::Int64>("/loam_dynamixel/rpm", 1, &loam_dynamixel::rpmCallback, this);
+
+  isCom = initDynamixelSdk();
+
   return true;
 }
 

@@ -1,0 +1,11 @@
+<launch>
+    <node pkg="ydlidar_ros_driver" type="G6_G7.launch" name="ydlidar_node" output="screen" />
+
+    <node pkg="loam_dynamixel" type="loam_dynamixel" name="loam_dynamixel_node" output="screen" />
+
+    <include file="$(find laserscan_to_pointcloud)/launch/laserscan_to_pointcloud_assembler.launch" />
+
+    <node pkg="imu2tf" type="imu2tf_converter" name="imu2tf_node" output="screen" />
+
+    <node pkg="imu_test" type="imu_pub" name="imu_pub_node" output="screen" />
+</launch>
